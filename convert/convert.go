@@ -126,14 +126,12 @@ func ValidateReadData(arr []string) bool {
 			}
 			convertRoman := ConvertData(roman)
 			lenSliceWORoman := len(sliceWORoman)
-			// fmt.Println(convertRoman, lenSliceWORoman)
 			if lenSliceWORoman >= 1 && convertRoman != 0 {
 				dValues := []float64{}
 				value := 1.0
 				for _, elm := range sliceWORoman {
 					dValue, _ := getCreditData(elm)
 					if dValue == 0.0 {
-						// fmt.Println("I have no idea what you are talking about")
 						dValues = []float64{}
 						break
 					} else {
@@ -152,7 +150,6 @@ func ValidateReadData(arr []string) bool {
 				for _, x := range romanSlice {
 					result = result + x + " "
 				}
-				// valToStr := fmt.Sprintf(%2f, value)
 				result += "is " + fmt.Sprintf("%.2f", value)
 				fmt.Println(result)
 				return true
@@ -172,7 +169,6 @@ func ValidateReadData(arr []string) bool {
 				if val != "" {
 					roman += val
 				} else {
-					// fmt.Println("I have no idea what you are talking about")
 					roman = ""
 					break
 				}
@@ -189,7 +185,6 @@ func ValidateReadData(arr []string) bool {
 			} else {
 				fmt.Println("I have no idea what you are talking about")
 			}
-			// fmt.Println(romanSlice)
 		} else {
 			fmt.Println("I have no idea what you are talking about")
 		}
