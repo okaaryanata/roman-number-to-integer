@@ -21,7 +21,8 @@ var aliasData = map[string]string{}
 
 var creditData = map[string]float64{}
 
-func checkData(word string, list []string) bool {
+// CheckData - check if string in slice of string
+func CheckData(word string, list []string) bool {
 	for _, b := range list {
 		if b == word {
 			return true
@@ -30,7 +31,8 @@ func checkData(word string, list []string) bool {
 	return false
 }
 
-func findIdx(a []string, x string) int {
+// FindIdx - function to find index of string from slice of string
+func FindIdx(a []string, x string) int {
 	for i, n := range a {
 		if x == n {
 			return i
@@ -40,72 +42,89 @@ func findIdx(a []string, x string) int {
 }
 
 // ValidateInputData - function for validate input from user when user add new data
-func ValidateInputData(arr []string) {
+func ValidateInputData(arr []string) bool {
+	ok := false
 	lenArr := len(arr)
-	if checkData("is", arr) && checkData("credits", arr) {
+	if CheckData("is", arr) && CheckData("credits", arr) {
 		roman := ""
-		idxIs := findIdx(arr, "is")
+		idxIs := FindIdx(arr, "is")
 		if idxIs != 0 && lenArr == idxIs+3 {
 			romanSlice := arr[:idxIs]
 			sliceWORoman := []string{}
+			prev := true
 			for _, elm := range romanSlice {
 				val, _ := getData(elm)
 				if val != "" {
-					roman += val
+					if prev {
+						roman += val
+					} else {
+						roman = ""
+						break
+					}
 				} else {
-					sliceWORoman = append([]string{elm})
+					sliceWORoman = append(sliceWORoman, elm)
+					prev = false
 				}
 			}
-			convertRoman := convertData(roman)
+			convertRoman := ConvertData(roman)
 			if len(sliceWORoman) == 1 && convertRoman != 0 {
 				credit, err := strconv.Atoi(arr[idxIs+1])
 				if err != nil {
 					fmt.Println("I have no idea what you are talking about")
+					return ok
 				}
 				creditValue := float64(credit) / float64(convertRoman)
-				// fmt.Println(credit, creditValue, float64(credit), float64(convertRoman))
 				creditValue = math.Round(creditValue*100) / 100
-				// fmt.Println(creditValue)
 				saveCreditData(sliceWORoman[0], creditValue)
-				// fmt.Println(creditData)
 				fmt.Println("Success Add Data")
+				return true
 			} else {
 				fmt.Println("I have no idea what you are talking about")
 			}
 		} else {
 			fmt.Println("I have no idea what you are talking about")
 		}
-	} else if checkData("is", arr) && !checkData("credits", arr) {
-		idxIs := findIdx(arr, "is")
+	} else if CheckData("is", arr) && !CheckData("credits", arr) {
+		idxIs := FindIdx(arr, "is")
 		romanSlice := arr[:idxIs]
 		if idxIs != 0 && lenArr == idxIs+2 && len(romanSlice) == 1 && saveData(arr[0], arr[len(arr)-1]) {
 			fmt.Println("Success Add Data")
+			return true
 		} else {
 			fmt.Println("I have no idea what you are talking about")
 		}
 	} else {
 		fmt.Println("I have no idea what you are talking about")
 	}
+	return ok
 }
 
 // ValidateReadData - function for validate input from user when user read data
-func ValidateReadData(arr []string) {
+func ValidateReadData(arr []string) bool {
+	ok := false
 	lenArr := len(arr)
-	if checkData("many", arr) {
-		idxMany := findIdx(arr, "many")
+	if CheckData("many", arr) {
+		idxMany := FindIdx(arr, "many")
 		if idxMany == 1 && lenArr >= 6 && arr[0] == "how" && arr[2] == "credits" && arr[3] == "is" && arr[lenArr-1] == "?" {
 			romanSlice := arr[4 : lenArr-1]
 			roman := ""
 			sliceWORoman := []string{}
+			prev := true
 			for _, elm := range romanSlice {
 				val, _ := getData(elm)
 				if val != "" {
-					roman += val
+					if prev {
+						roman += val
+					} else {
+						roman = ""
+						break
+					}
 				} else {
-					sliceWORoman = append([]string{elm})
+					sliceWORoman = append(sliceWORoman, elm)
+					prev = false
 				}
 			}
-			convertRoman := convertData(roman)
+			convertRoman := ConvertData(roman)
 			lenSliceWORoman := len(sliceWORoman)
 			// fmt.Println(convertRoman, lenSliceWORoman)
 			if lenSliceWORoman >= 1 && convertRoman != 0 {
@@ -118,7 +137,7 @@ func ValidateReadData(arr []string) {
 						dValues = []float64{}
 						break
 					} else {
-						dValues = append([]float64{dValue})
+						dValues = append(dValues, dValue)
 					}
 				}
 				if len(dValues) == 0 {
@@ -136,14 +155,15 @@ func ValidateReadData(arr []string) {
 				// valToStr := fmt.Sprintf(%2f, value)
 				result += "is " + fmt.Sprintf("%.2f", value)
 				fmt.Println(result)
+				return true
 			} else {
 				fmt.Println("I have no idea what you are talking about")
 			}
 		} else {
 			fmt.Println("I have no idea what you are talking about")
 		}
-	} else if checkData("much", arr) {
-		idxMuch := findIdx(arr, "much")
+	} else if CheckData("much", arr) {
+		idxMuch := FindIdx(arr, "much")
 		if idxMuch == 1 && lenArr >= 5 && arr[0] == "how" && arr[2] == "is" && arr[lenArr-1] == "?" {
 			romanSlice := arr[3 : lenArr-1]
 			roman := ""
@@ -157,14 +177,15 @@ func ValidateReadData(arr []string) {
 					break
 				}
 			}
-			convertData := convertData(roman)
-			if convertData != 0 {
+			ConvertData := ConvertData(roman)
+			if ConvertData != 0 {
 				result := ""
 				for _, x := range romanSlice {
 					result = result + x + " "
 				}
-				result += "is " + strconv.Itoa(convertData)
+				result += "is " + strconv.Itoa(ConvertData)
 				fmt.Println(result)
+				return true
 			} else {
 				fmt.Println("I have no idea what you are talking about")
 			}
@@ -175,10 +196,11 @@ func ValidateReadData(arr []string) {
 	} else {
 		fmt.Println("I have no idea what you are talking about")
 	}
+	return ok
 }
 
 func saveData(word string, roman string) bool {
-	res := convertData(roman)
+	res := ConvertData(roman)
 	if res != 0 {
 		aliasData[word] = roman
 		return true
@@ -215,7 +237,8 @@ func getCreditData(credit string) (float64, string) {
 	}
 }
 
-func convertData(word string) int {
+// ConvertData - function for convert roman number to integer
+func ConvertData(word string) int {
 	lenWord := len(word)
 	if lenWord == 0 {
 		return 0
@@ -224,6 +247,12 @@ func convertData(word string) int {
 		count := strings.Count(word, string(x))
 		if count > 3 {
 			return 0
+		} else if count == 3 {
+			if string(x) == "I" || string(x) == "X" || string(x) == "C" {
+
+			} else {
+				return 0
+			}
 		}
 	}
 	sum := mapsValue[string(word[lenWord-1])]
