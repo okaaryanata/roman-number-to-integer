@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-var mapsValue = map[string]int{
-	"M": 1000,
-	"D": 500,
-	"C": 100,
-	"L": 50,
-	"X": 10,
-	"V": 5,
-	"I": 1,
+var mapsValue = map[string]map[string]int{
+	"I": map[string]int{"r": 3, "l": 1, "t": 3, "v": 1},
+	"V": map[string]int{"r": 1, "l": 0, "t": 1, "v": 5},
+	"X": map[string]int{"r": 3, "l": 1, "t": 4, "v": 10},
+	"L": map[string]int{"r": 1, "l": 0, "t": 1, "v": 50},
+	"C": map[string]int{"r": 3, "l": 1, "t": 3, "v": 100},
+	"D": map[string]int{"r": 1, "l": 0, "t": 1, "v": 500},
+	"M": map[string]int{"r": 0, "l": 0, "t": 4, "v": 1000},
 }
 
 var aliasData = map[string]string{}
@@ -240,24 +240,29 @@ func ConvertData(word string) int {
 	}
 	for _, x := range word {
 		count := strings.Count(word, string(x))
-		if count > 3 {
+		if mapsValue[string(x)]["t"] < count {
 			return 0
-		} else if count == 3 {
-			if string(x) == "I" || string(x) == "X" || string(x) == "C" {
-
-			} else {
-				return 0
-			}
+			break
+		} else if count == lenWord && lenWord > 3 {
+			return 0
+			break
 		}
 	}
-	sum := mapsValue[string(word[lenWord-1])]
+	sum := mapsValue[string(word[lenWord-1])]["v"]
 	for x := lenWord - 1; x > 0; x-- {
-		data := mapsValue[string(word[x])]
-		prev := mapsValue[string(word[x-1])]
+		data := mapsValue[string(word[x])]["v"]
+		prev := mapsValue[string(word[x-1])]["v"]
 		if prev >= data {
 			sum += prev
 		} else {
 			sum -= prev
+		}
+	}
+	if lenWord > 1 {
+		if val, ok := mapsValue[string(word[lenWord-1])]["v"]; ok {
+			if val == sum {
+				sum = 0
+			}
 		}
 	}
 	return sum
