@@ -40,6 +40,7 @@ func InputData() {
 	for input != "0" {
 		input, _ = reader.ReadString('\n')
 		input = strings.Replace(input, "\n", "", -1)
+		input = strings.TrimSpace(input)
 		arr := strings.Split(input, " ")
 		lenArr := len(arr)
 		for idx, elm := range arr {
@@ -72,7 +73,16 @@ func ReadData() {
 		input, _ = reader.ReadString('\n')
 		input = strings.Replace(input, "\n", "", -1)
 		input = strings.ToLower(input)
+		input = strings.TrimSpace(input)
 		arr := strings.Split(input, " ")
+		lastArr := arr[len(arr)-1]
+		if len(lastArr) > 1{
+			lastElm := string(lastArr[len(lastArr)-1])
+			if lastElm == "?" {
+				arr[len(arr)-1] = lastArr[:len(lastArr)-1]
+				arr = append(arr, "?")
+			}
+		}
 		switch input {
 		case "0":
 			Menu()

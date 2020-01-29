@@ -138,21 +138,21 @@ func ValidateReadData(arr []string) bool {
 						dValues = append(dValues, dValue)
 					}
 				}
+				result := ""
 				if len(dValues) == 0 {
 					fmt.Println("I have no idea what you are talking about")
 				} else {
 					for _, x := range dValues {
 						value = value * x
 					}
+					value = float64(convertRoman) * value
+					for _, x := range romanSlice {
+						result = result + x + " "
+					}
+					result += "is " + fmt.Sprintf("%.2f", value)
+					fmt.Println(result)
+					return true
 				}
-				value = float64(convertRoman) * value
-				result := ""
-				for _, x := range romanSlice {
-					result = result + x + " "
-				}
-				result += "is " + fmt.Sprintf("%.2f", value)
-				fmt.Println(result)
-				return true
 			} else {
 				fmt.Println("I have no idea what you are talking about")
 			}
