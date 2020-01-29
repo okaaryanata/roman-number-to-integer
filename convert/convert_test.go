@@ -77,6 +77,9 @@ func TestValidateInputData(t *testing.T) {
 		expected bool
 	}{
 		{"glob is I", true},
+		{"    glob is I   ", true},
+		{"glob is I   ", true},
+		{"        glob is I", true},
 		{"glob is i", false},
 		{"glab is II", true},
 		{"prok is VVV", false},
@@ -100,6 +103,7 @@ func TestValidateInputData(t *testing.T) {
 		{"how much wood could a woodchuck chuck if a woodchuck could chuck wood ? ", false},
 	}
 	for _, test := range tests {
+		test.str = strings.TrimSpace(test.str)
 		arr := strings.Split(test.str, " ")
 		lenArr := len(arr)
 		for idx, elm := range arr {
@@ -119,6 +123,8 @@ func TestValidateReadData(t *testing.T) {
 		expected bool
 	}{
 		{"how much is pish tegj glob glob ?", true},
+		{"    how much is pish tegj glob glob ?   ", true},
+		{"how much is pish tegj glob glob?    ", true},
 		{"how much is pish tegj glob glob glob glob ?", false},
 		{"how much is pish tegj glob glob ?", true},
 		{"how much is prok prok prok ?", false},
@@ -139,7 +145,16 @@ func TestValidateReadData(t *testing.T) {
 	}
 	for _, test := range tests {
 		test.str = strings.ToLower(test.str)
+		test.str = strings.TrimSpace(test.str)
 		arr := strings.Split(test.str, " ")
+		lastArr := arr[len(arr)-1]
+		if len(lastArr) > 1 {
+			lastElm := string(lastArr[len(lastArr)-1])
+			if lastElm == "?" {
+				arr[len(arr)-1] = lastArr[:len(lastArr)-1]
+				arr = append(arr, "?")
+			}
+		}
 		if out := ValidateReadData(arr); out != test.expected {
 			t.Errorf("Test Failed: {%v} string, {%v} expected, received : {%v}", test.str, test.expected, out)
 		}
